@@ -71,21 +71,9 @@ Every module has a directed testbench (`tb/*_tb.v`), run with Icarus Verilog
 - `sm_top_tb.v`: full pipeline integration, straight-line execution across both
   interleaved warps with verified register-file isolation
 
-Run everything:
-```bash
-cd rtl
-for tb in ../tb/*_tb.v; do
-  name=$(basename $tb .v)
-  iverilog -o /tmp/$name alu.v register_file.v lane.v decode_unit.v instr_mem.v \
-    fetch_unit.v warp_scheduler.v divergence_ctrl.v sm_top.v $tb 2>/dev/null
-  echo "=== $name ==="; vvp /tmp/$name | grep -E "PASS|FAIL"
-done
-```
-
 ## Toolchain
 
-Verilog + Vivado (synthesis/simulation), Icarus Verilog (`iverilog`) for fast
-CLI-based regression during development.
+Verilog + Vivado (synthesis/simulation)
 
 ## Status / what's not yet built
 
