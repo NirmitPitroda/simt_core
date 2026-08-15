@@ -1,12 +1,12 @@
 module alu (
-    input  wire [3:0]  opcode,     // selects operation (see localparams)
-    input  wire [31:0] operand_a,
-    input  wire [31:0] operand_b,
-    output reg  [31:0] result,
-    output wire         zero        // 1 when result == 0
+    input wire [3:0] opcode,     // selects operation (see localparams)
+    input wire [31:0] operand_a,
+    input wire [31:0] operand_b,
+    output reg [31:0] result,
+    output wire zero        // 1 when result == 0
 );
 
-    // Opcode encoding — must match funct field used by decode_unit.v
+    // Opcode encoding
     localparam ALU_ADD = 4'b0000;
     localparam ALU_SUB = 4'b0001;
     localparam ALU_AND = 4'b0010;
@@ -31,7 +31,5 @@ module alu (
             default: result = 32'd0;
         endcase
     end
-
     assign zero = (result == 32'd0);
-
 endmodule
