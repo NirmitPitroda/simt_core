@@ -1,9 +1,3 @@
-// =============================================================
-// alu.v
-// Pure combinational ALU for one SIMT lane.
-// No clock, no state — result depends only on current inputs.
-// =============================================================
-
 module alu (
     input  wire [3:0]  opcode,     // selects operation (see localparams)
     input  wire [31:0] operand_a,
