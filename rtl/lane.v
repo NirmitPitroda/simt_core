@@ -1,36 +1,30 @@
-// =============================================================
-// lane.v
-// One SIMT lane: register_file.v + alu.v wired together.
-//   operand read -> ALU compute -> gated writeback
-//
+//One SIMT lane: register_file.v + alu.v wired together.
+// operand read -> ALU compute -> gated writeback
 // operand_b_sel: 0 = use rs2 register value (R-type)
 //                1 = use sign-extended immediate (I-type)
-// active_mask:   1 = lane executes this instruction and may write
-//                     back (comes from divergence_ctrl.v; tied to
-//                     1 for now until that module exists)
-// =============================================================
+// active_mask:   1 = lane executes this instruction and may write back
 
 module lane (
-    input  wire        clk,
-    input  wire        rst_n,
-    input  wire        warp_select,   // selects warp's partition in register_file.v
+    input wire clk,
+    input wire rst_n,
+    input wire warp_select,   // selects warp's partition in register_file.v
 
-    input  wire [3:0]  rs1_addr,
-    input  wire [3:0]  rs2_addr,
-    input  wire [3:0]  rd_addr,
-    input  wire [3:0]  alu_opcode,
-    input  wire        operand_b_sel,
-    input  wire [11:0] immediate,
-    input  wire        active_mask,
+    input wire [3:0] rs1_addr,
+    input wire [3:0] rs2_addr,
+    input wire [3:0] rd_addr,
+    input wire [3:0] alu_opcode,
+    input wire operand_b_sel,
+    input wire [11:0] immediate,
+    input wire active_mask,
 
     output wire [31:0] alu_result,
-    output wire         zero
+    output wire zero
 );
 
     wire [31:0] rs1_data, rs2_data;
     wire [31:0] imm_sext = {{20{immediate[11]}}, immediate}; // sign-extend 12->32
     wire [31:0] operand_b = operand_b_sel ? imm_sext : rs2_data;
-    wire        write_enable = active_mask;
+    wire write_enable = active_mask;
 
     register_file u_regfile (
         .clk(clk),
