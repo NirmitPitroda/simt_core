@@ -74,12 +74,3 @@ Every module has a directed testbench (`tb/*_tb.v`), run with Icarus Verilog
 ## Toolchain
 
 Verilog + Vivado (synthesis/simulation)
-
-## Status / what's not yet built
-
-- Divergent-loop handling (Tier 4 in the original verification plan) — not covered by
-  the current reconvergence model; would need loop-aware stack semantics
-- No memory (load/store) datapath yet — `decode_unit.v` recognizes LOAD/STORE
-  instruction types but nothing downstream acts on them yet
-- No golden-model (software reference) diff harness yet for broader test-program
-  verification beyond the directed testbenches
