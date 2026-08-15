@@ -47,29 +47,29 @@
 //   (nested branches just push additional entries, unwound LIFO).
 // =============================================================
 
-module divergence_ctrl (
-    input  wire        clk,
-    input  wire        rst_n,
+module divergence_ctrl(
+    input wire clk,
+    input wire rst_n,
 
-    input  wire        fetched_warp,   // from fetch_unit: which warp this cycle's instruction belongs to
-    input  wire [31:0] current_pc,     // from fetch_unit: PC of the instruction just fetched
-    input  wire         is_branch,      // from decode_unit
-    input  wire [11:0] immediate,      // from decode_unit: branch offset
+    input wire fetched_warp,      // from fetch_unit: which warp this cycle's instruction belongs to
+    input wire [31:0] current_pc, // from fetch_unit: PC of the instruction just fetched
+    input wire is_branch,         // from decode_unit
+    input wire [11:0] immediate,  // from decode_unit: branch offset
 
-    input  wire        lane0_zero,     // from lane[i].alu: per-lane branch-condition result
-    input  wire        lane1_zero,
-    input  wire        lane2_zero,
-    input  wire        lane3_zero,
+    input wire lane0_zero,     // from lane[i].alu: per-lane branch-condition result
+    input wire lane1_zero,
+    input wire lane2_zero,
+    input wire lane3_zero,
 
-    output wire [3:0]  active_mask,    // active_mask for the currently fetched warp -> fans out to lane0..3
+    output wire [3:0] active_mask,    // active_mask for the currently fetched warp -> fans out to lane0..3
 
     // Kept for interface completeness / future extension (e.g. an
     // unconditional-jump instruction). Not needed for correctness
     // of divergence with this ISA — see header comment — so these
     // are tied off.
-    output wire         branch_taken,
+    output wire branch_taken,
     output wire [31:0] branch_target,
-    output wire         branch_warp
+    output wire branch_warp
 );
 
     localparam STACK_DEPTH = 8;
@@ -93,14 +93,14 @@ module divergence_ctrl (
     reg [3:0]  sp1;
 
     // ---------------- Branch condition / target (combinational) ----------------
-    wire [3:0]  cond      = {lane3_zero, lane2_zero, lane1_zero, lane0_zero};
-    wire [31:0] imm_sext  = {{20{immediate[11]}}, immediate};
+    wire [3:0] cond = {lane3_zero, lane2_zero, lane1_zero, lane0_zero};
+    wire [31:0] imm_sext = {{20{immediate[11]}}, immediate};
     wire [31:0] target_pc = current_pc + imm_sext;
 
-    wire [3:0] taken_mask0     = mask0 & cond;
+    wire [3:0] taken_mask0 = mask0 & cond;
     wire [3:0] not_taken_mask0 = mask0 & ~cond;
 
-    wire [3:0] taken_mask1     = mask1 & cond;
+    wire [3:0] taken_mask1 = mask1 & cond;
     wire [3:0] not_taken_mask1 = mask1 & ~cond;
 
     wire reconverge0 = (sp0 != 0) && (current_pc == stack_pc0[sp0-1]);
@@ -148,5 +148,4 @@ module divergence_ctrl (
             end
         end
     end
-
 endmodule
